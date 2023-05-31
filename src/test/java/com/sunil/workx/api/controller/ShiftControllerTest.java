@@ -7,12 +7,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
-import com.sunil.workx.api.config.ShiftService;
-import com.sunil.workx.api.entity.Shift;
+import com.sunil.workx.api.domain.ShiftDTO;
+import com.sunil.workx.api.service.ShiftService;
 
 public class ShiftControllerTest {
 
@@ -21,26 +20,26 @@ public class ShiftControllerTest {
 
 	@Test
 	public void testGetAllShifts() throws Exception {
-		when(shiftService.getAllShifts()).thenReturn(Arrays.asList(Shift.builder().build()));
+		when(shiftService.getAllShifts()).thenReturn(Arrays.asList(ShiftDTO.builder().build()));
 		assertThat(shiftController.getAllShifts()).isNotNull();
 	}
 
 	@Test
 	public void testGetShift() throws Exception {
-		when(shiftService.getShift(1L)).thenReturn(Optional.of(Shift.builder().build()));
+		when(shiftService.getShift(1L)).thenReturn(ShiftDTO.builder().build());
 		assertThat(shiftController.getShift(1L)).isNotNull();
 	}
 
 	@Test
 	public void testCreateShift() throws Exception {
-		Shift shift = Shift.builder().build();
+		ShiftDTO shift = ShiftDTO.builder().build();
 		when(shiftService.upsertShift(shift)).thenReturn(shift);
 		assertThat(shiftController.createShift(shift)).isNotNull();
 	}
 
 	@Test
 	public void testUpdateShift() throws Exception {
-		Shift shift = Shift.builder().build();
+		ShiftDTO shift = ShiftDTO.builder().build();
 		when(shiftService.upsertShift(shift)).thenReturn(shift);
 		assertThat(shiftController.updateShift(shift)).isNotNull();
 	}

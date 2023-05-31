@@ -10,10 +10,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sunil.workx.api.config.ShiftService;
-import com.sunil.workx.api.entity.Shift;
-import com.sunil.workx.api.exception.ResourceAlreadyExistsException;
+import com.sunil.workx.api.domain.ShiftDTO;
 import com.sunil.workx.api.exception.ResourceNotFoundException;
+import com.sunil.workx.api.service.ShiftService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,33 +23,32 @@ public class ShiftController {
 	private ShiftService shiftService;
 
 	@GetMapping("/shift")
-	List<Shift> getAllShifts() {
+	List<ShiftDTO> getAllShifts() {
 		log.info("Get all shifts");
 		return shiftService.getAllShifts();
 	}
 
 	@GetMapping("/shift/{id}")
-	Shift getShift(@PathVariable Long id) {
+	ShiftDTO getShift(@PathVariable Long id) {
 		log.info("Get shift: {}", id);
-		return shiftService.getShift(id).orElseThrow(() -> new ResourceNotFoundException("Shift with id: " + id));
-	}
-
-	@PostMapping("/shift")
-	Shift createShift(@RequestBody Shift shift) {
-		log.info("Create shift: {}", shift.getName());
-		try {
-			return shiftService.upsertShift(shift);
-		} catch(Exception e) {
-			String errMsg = "Shift with name' " + shift.getName() + "' already exists";
-			log.error(errMsg, e);
-			throw new ResourceAlreadyExistsException(errMsg);
+		ShiftDTO shiftDTO = shiftService.getShift(id);
+		if(shiftDTO == null) {
+			throw new ResourceNotFoundException("Shift with id: " + id);
+		} else {
+			return shiftDTO;
 		}
 	}
 
+	@PostMapping("/shift")
+	ShiftDTO createShift(@RequestBody ShiftDTO shiftDTO) {
+		log.info("Create shift: {}", shiftDTO.getName());
+		return shiftService.upsertShift(shiftDTO);
+	}
+
 	@PutMapping("/shift")
-	Shift updateShift(@RequestBody Shift shift) {
-		log.info("Update shift: {}", shift.getId());
-		return shiftService.upsertShift(shift);
+	ShiftDTO updateShift(@RequestBody ShiftDTO shiftDTO) {
+		log.info("Update shift: {}", shiftDTO.getId());
+		return shiftService.upsertShift(shiftDTO);
 	}
 
 	@DeleteMapping("/shift/{id}")
