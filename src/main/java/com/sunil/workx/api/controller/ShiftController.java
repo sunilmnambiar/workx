@@ -63,7 +63,7 @@ public class ShiftController {
 	}
 	
 	private void validateShift(ShiftDTO shiftDTO) {
-		if(!startTime.contains(shiftDTO.getStartTime()) || !endTime.contains(shiftDTO.getStartTime())) {
+		if(!startTime.contains(shiftDTO.getStartTime()) || !endTime.contains(shiftDTO.getEndTime())) {
 			throw new BadRequestException(String.format("Start time or end time is not correct: %s-%s", shiftDTO.getStartTime(), shiftDTO.getEndTime()));
 		}
 	}
