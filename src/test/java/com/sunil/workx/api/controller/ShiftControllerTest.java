@@ -1,6 +1,7 @@
 package com.sunil.workx.api.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -11,6 +12,7 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
 import com.sunil.workx.api.domain.ShiftDTO;
+import com.sunil.workx.api.exception.BadRequestException;
 import com.sunil.workx.api.service.ShiftService;
 
 public class ShiftControllerTest {
@@ -32,9 +34,23 @@ public class ShiftControllerTest {
 
 	@Test
 	public void testCreateShift() throws Exception {
-		ShiftDTO shift = ShiftDTO.builder().build();
+		ShiftDTO shift = ShiftDTO.builder().name("shift-1").startTime("08:00").endTime("16:00").build();
 		when(shiftService.upsertShift(shift)).thenReturn(shift);
 		assertThat(shiftController.createShift(shift)).isNotNull();
+	}
+	
+	@Test
+	public void testCreateShiftInvalidStartTime() throws Exception {
+		ShiftDTO shift = ShiftDTO.builder().name("shift-1").startTime("01:00").endTime("08:00").build();
+		when(shiftService.upsertShift(shift)).thenReturn(shift);
+		assertThrows(BadRequestException.class, () -> shiftController.createShift(shift));
+	}
+	
+	@Test
+	public void testCreateShiftInvalidEndTime() throws Exception {
+		ShiftDTO shift = ShiftDTO.builder().name("shift-1").startTime("08:00").endTime("09:00").build();
+		when(shiftService.upsertShift(shift)).thenReturn(shift);
+		assertThrows(BadRequestException.class, () -> shiftController.createShift(shift));
 	}
 
 	@Test
